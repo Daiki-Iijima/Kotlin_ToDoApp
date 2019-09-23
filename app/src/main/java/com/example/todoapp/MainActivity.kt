@@ -8,6 +8,13 @@ import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import org.w3c.dom.Text
+import android.content.Intent
+import androidx.core.app.ComponentActivity
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,6 +44,10 @@ class MainActivity : AppCompatActivity() {
         {
             items.add("test")
             TodoTableView.adapter = adapter
+
+            //  情報追加画面に遷移
+            val intent = Intent(application, SubActivity::class.java)
+            startActivity(intent)
         }
     }
 }
