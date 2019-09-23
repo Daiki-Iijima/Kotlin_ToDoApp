@@ -2,14 +2,8 @@ package com.example.todoapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main.*
-import org.w3c.dom.Text
-import android.content.Intent
-import androidx.core.app.ComponentActivity
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.widget.*
+import org.w3c.dom.Text
 
 
 class MainActivity : AppCompatActivity() {
@@ -19,11 +13,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //  最初に画面に表示するActivity
         setMainActivity()
     }
 
     private fun setMainActivity()
     {
+        //  使用するレイアウトファイルを設定
         setContentView(R.layout.activity_main)
 
         val adapter  = ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,items)
@@ -32,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<ListView>(R.id.TodoTableView).setOnItemClickListener{ _,view,_,_->
             val textView = view.findViewById<TextView>(android.R.id.text1)
-            Toast.makeText(this,"クリックされたぞ : ${textView.text}",Toast.LENGTH_SHORT).show()
+            setEditDataActivity(textView.text.toString())
         }
 
         this.findViewById<Button>(R.id.AddButton).setOnClickListener()
@@ -44,7 +40,8 @@ class MainActivity : AppCompatActivity() {
 
     private  fun setAddDataActivity()
     {
-        setContentView(R.layout.subavtivity_main)
+        //  使用するレイアウトファイルを設定
+        setContentView(R.layout.activity_sub)
 
         this.findViewById<Button>(R.id.AddButton).setOnClickListener()
         {
@@ -52,6 +49,32 @@ class MainActivity : AppCompatActivity() {
                 this.findViewById<TextView>(R.id.AddTextView).text.toString()
             )
 
+            setMainActivity()
+        }
+
+        this.findViewById<Button>(R.id.CanselButton).setOnClickListener()
+        {
+            setMainActivity()
+        }
+
+    }
+
+
+    private fun setEditDataActivity(dataStr:String)
+    {
+        //  使用するレイアウトファイルを設定
+        setContentView(R.layout.activity_edit)
+
+        this.findViewById<TextView>(R.id.ToDoText).text = dataStr
+
+        this.findViewById<Button>(R.id.CompleteButton).setOnClickListener()
+        {
+            items.remove(dataStr)
+            setMainActivity()
+        }
+
+        this.findViewById<Button>(R.id.CanselButton).setOnClickListener()
+        {
             setMainActivity()
         }
 
