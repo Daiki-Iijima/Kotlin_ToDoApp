@@ -8,8 +8,10 @@ import org.w3c.dom.Text
 
 class MainActivity : AppCompatActivity() {
 
+    //  情報を保存する画面
     var items = ArrayList<String>()
 
+    //  コンストラクタ
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -17,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         setMainActivity()
     }
 
+    //  メイン画面(ListViewがある画面)
     private fun setMainActivity()
     {
         //  使用するレイアウトファイルを設定
@@ -38,7 +41,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private  fun setAddDataActivity()
+    //  データ設定画面
+    private fun setAddDataActivity()
     {
         //  使用するレイアウトファイルを設定
         setContentView(R.layout.activity_sub)
@@ -59,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
+    //  データ編集画面
     private fun setEditDataActivity(dataStr:String)
     {
         //  使用するレイアウトファイルを設定
