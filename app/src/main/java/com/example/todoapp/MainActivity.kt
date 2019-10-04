@@ -2,8 +2,12 @@ package com.example.todoapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.w3c.dom.Text
+import java.lang.reflect.Type
 
 
 class MainActivity : AppCompatActivity() {
@@ -15,9 +19,29 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        test()
+
         //  最初に画面に表示するActivity
         setMainActivity()
     }
+
+    fun test(){
+        val map : MutableMap<String, String> = mutableMapOf()
+        map.put("a1", "A1")
+        map.put("a2", "A2")
+        map.put("a3", "A3")
+
+        val gson = Gson()
+        val jsonString : String = gson.toJson(map)
+        Log.d("Kotlin", jsonString)
+        val type : Type = object : TypeToken<MutableMap<String, String>>() {}.type
+
+        val map2 : MutableMap<String, String> = gson.fromJson(jsonString, type)
+        for (mapValue in map2.values) {
+            Log.d("Kotlin", mapValue)
+        }
+    }
+
 
     //  メイン画面(ListViewがある画面)
     private fun setMainActivity()
