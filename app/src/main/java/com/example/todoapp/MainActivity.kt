@@ -7,41 +7,63 @@ import android.widget.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.w3c.dom.Text
+import java.io.BufferedReader
+import java.io.File
 import java.lang.reflect.Type
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
 
     //  情報を保存する画面
     var items = ArrayList<String>()
+    var map : MutableMap<String, String> = mutableMapOf()
 
     //  コンストラクタ
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        test()
+
 
         //  最初に画面に表示するActivity
         setMainActivity()
     }
 
-    fun test(){
-        val map : MutableMap<String, String> = mutableMapOf()
-        map.put("a1", "A1")
-        map.put("a2", "A2")
-        map.put("a3", "A3")
+    fun SaveJsonFile(saveMap:MutableMap<String,String>){
 
+        Log.d("これはタグ","これはログで出力したい文字列")
         val gson = Gson()
-        val jsonString : String = gson.toJson(map)
-        Log.d("Kotlin", jsonString)
-        val type : Type = object : TypeToken<MutableMap<String, String>>() {}.type
+        val jsonString : String = gson.toJson(saveMap)
 
-        val map2 : MutableMap<String, String> = gson.fromJson(jsonString, type)
-        for (mapValue in map2.values) {
-            Log.d("Kotlin", mapValue)
+        //  データ保存用にテキストを保存
+        val fileName = "saveJson.json"
+        File(applicationContext.filesDir, fileName).writer().use {
+            it.write(jsonString)
         }
     }
 
+    fun LoadJsonFile()
+    {
+        val readFile = File(applicationContext.filesDir,"saveJson.json")
+
+        if(readFile.exists()){
+            val contents = readFile.bufferedReader().use(BufferedReader::readText)
+
+            val gson = Gson()
+            val type : Type = object : TypeToken<MutableMap<String, String>>() {}.type
+
+            val loadDataMap : MutableMap<String, String> = gson.fromJson(contents, type)
+            for (mapValue in loadDataMap.values) {
+                Log.d("LoadKotlin", mapValue)
+            }
+
+            map = loadDataMap
+        }
+
+
+    }
 
     //  メイン画面(ListViewがある画面)
     private fun setMainActivity()
@@ -49,7 +71,16 @@ class MainActivity : AppCompatActivity() {
         //  使用するレイアウトファイルを設定
         setContentView(R.layout.activity_main)
 
-        val adapter  = ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,items)
+        //  保存した情報の保存
+        LoadJsonFile()
+
+        //  代入用にキーをリストに変換
+        var itemData = map.keys.toList()
+
+
+
+
+        val adapter  = ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,itemData)
 
         findViewById<ListView>(R.id.TodoTableView).adapter = adapter
 
@@ -63,6 +94,7 @@ class MainActivity : AppCompatActivity() {
             setAddDataActivity()
         }
 
+
     }
 
     //  データ設定画面
@@ -73,10 +105,13 @@ class MainActivity : AppCompatActivity() {
 
         this.findViewById<Button>(R.id.AddButton).setOnClickListener()
         {
-            items.add(
-                this.findViewById<TextView>(R.id.AddTextView).text.toString()
-            )
 
+            var setDataStr = this.findViewById<TextView>(R.id.AddTextView).text.toString()
+            val df = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+            val date = Date()
+            map.put(setDataStr,df.format(date))
+
+            SaveJsonFile(map)
             setMainActivity()
         }
 
@@ -97,7 +132,7 @@ class MainActivity : AppCompatActivity() {
 
         this.findViewById<Button>(R.id.CompleteButton).setOnClickListener()
         {
-            items.remove(dataStr)
+            map.remove(dataStr)
             setMainActivity()
         }
 
